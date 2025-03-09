@@ -1,0 +1,80 @@
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h1 class="text-center text-secondary">📒 Agenda de Contactos</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form #contactoForm="ngForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nombre:</label>
+                        <input type="text" class="form-control" [(ngModel)]="contacto.nombre" name="nombre" 
+                            placeholder="Ingrese el nombre" required #nombre="ngModel" />
+                        @if(nombre.invalid && nombre.touched){
+                            <div class="text-danger">El nombre es obligatorio.</div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Teléfono:</label>
+                        <input type="text" class="form-control" [(ngModel)]="contacto.telefono" name="telefono"
+                            placeholder="Ingrese el teléfono" required pattern="^[0-9]+$" #telefono="ngModel" />
+                        @if(telefono.invalid && telefono.touched){
+                            <div class="text-danger">El teléfono es obligatorio y solo debe contener números.</div>
+                        }
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" [(ngModel)]="contacto.favorito" name="favorito" />
+                        <label class="form-check-label">Marcar como contacto favorito</label>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        @if(editar === false){
+                            <button type="submit" class="btn btn-primary" (click)="insertartContacto()" [disabled]="contactoForm.invalid">Guardar</button>
+                        }
+                        @else {
+                            <button type="button" class="btn btn-warning" (click)="updateContacto()" [disabled]="contactoForm.invalid">Actualizar</button>
+                            <button type="button" class="btn btn-danger" (click)="limpiarFormulario()">Cancelar</button>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <h2 class="text-center text-success">📋 Lista de Contactos</h2>
+    @if(contactos.length > 0){
+    <div class="table-responsive">
+        <table class="table table-striped table-hover text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Favorito</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (contacto of contactos; track contacto.id) {
+                <tr>
+                    <td>{{ contacto.nombre }}</td>
+                    <td>{{ contacto.telefono }}</td>
+                    <td>{{ contacto.favorito ? '⭐ Sí' : '❌ No' }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning"
+                            (click)="selectContacto(contacto)">Editar</button>
+                        <button class="btn btn-sm btn-danger" (click)="deleteContacto(contacto)">Eliminar</button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+
+    @if(contactos.length === 0){
+    <p class="text-center text-muted">No hay contactos en la agenda.</p>
+    }
+</div>
